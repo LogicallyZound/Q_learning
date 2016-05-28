@@ -1,0 +1,163 @@
+# astar implementation needs to go here
+
+#!/usr/bin/env python
+
+
+def compute_backwards_cost(config):
+   start       = config["start"]
+   goal        = config["goal"]
+   walls       = config["walls"]
+   pits        = config["pits"]
+   map_siz_arr = config["map_size"]
+   map_height  = map_siz_arr[0]
+   map_width   = map_siz_arr[1]
+   step_cost   = config["reward_for_each_step"]
+
+   bw_cost_map = []
+
+   #create the gridspace
+   for i in range(0, map_height):
+      bw_cost_map.append(['uninit'] * map_width)
+
+
+   #add the start
+   bw_cost_map[start[0]][start[1]] = 'S'
+
+   #add the goal
+   bw_cost_map[goal[0]][goal[1]] = 'G'
+
+   #add in pits
+   for p in range(0, len(pits)):
+      bw_cost_map[pits[p][0]][pits[p][1]] = 'P'
+   
+   #add the walls 
+   for w in range(0, len(pits)):
+      bw_cost_map[walls[w][0]][walls[w][1]] = 'W'
+
+   #compute the forward costs
+   for h in range(0, map_height):
+      for w in range(0, map_width):
+         if bw_cost_map[h][w] == 'uninit':
+            bw_cost_map[h][w] = abs(start[0] - h) + abs(start[1] - w)
+
+   return bw_cost_map
+
+
+def compute_heuristic_map(config):
+   start       = config["start"]
+   goal        = config["goal"]
+   walls       = config["walls"]
+   pits        = config["pits"]
+   map_siz_arr = config["map_size"]
+   map_height  = map_siz_arr[0]
+   map_width   = map_siz_arr[1]
+   step_cost   = config["reward_for_each_step"]
+
+   heuristic_map = []
+
+   #create the gridspace
+   for i in range(0, map_height):
+      heuristic_map.append(['uninit'] * map_width)
+
+   #add the start
+   heuristic_map[start[0]][start[1]] = 'S'
+
+   #add the goal
+   heuristic_map[goal[0]][goal[1]] = 'G'
+
+   #add in pits
+   for p in range(0, len(pits)):
+      heuristic_map[pits[p][0]][pits[p][1]] = 'P'
+   
+   #add the walls 
+   for w in range(0, len(pits)):
+      heuristic_map[walls[w][0]][walls[w][1]] = 'W'
+
+   #manhattan distance
+   for h in range(0, map_height):
+      for w in range(0, map_width):
+         if heuristic_map[h][w] == 'uninit':
+            heuristic_map[h][w] = (abs(start[0] - h) + abs(start[1] - w))
+
+   return heuristic_map
+
+def get_astar_map(config):
+   start       = config["start"]
+   goal        = config["goal"]
+   walls       = config["walls"]
+   pits        = config["pits"]
+   map_siz_arr = config["map_size"]
+   map_height  = map_siz_arr[0]
+   map_width   = map_siz_arr[1]
+ 
+   bw_cost_map   = compute_backwards_cost(config)
+   heuristic_map = compute_heuristic_map(config) 
+
+
+   astar_map = []
+
+   #create the gridspace
+   for i in range(0, map_height):
+      astar_map.append(['uninit'] * map_width)
+
+   #add the start
+   astar_map[start[0]][start[1]] = 'S'
+
+   #add the goal
+   astar_map[goal[0]][goal[1]] = 'G'
+
+   #add in pits
+   for p in range(0, len(pits)):
+      astar_map[pits[p][0]][pits[p][1]] = 'P'
+   
+   #add the walls 
+   for w in range(0, len(pits)):
+      astar_map[walls[w][0]][walls[w][1]] = 'W'
+
+
+
+   for h in range(0, map_height):
+      for w in range(0, map_width):
+         if (bw_cost_map[h][w] != 'G' and bw_cost_map[h][w] != 'S' and
+             bw_cost_map[h][w] != 'P' and bw_cost_map[h][w] != 'W'):
+            astar_map[h][w] = bw_cost_map[h][w] + heuristic_map[h][w] 
+            
+   return astar_map
+
+def get_neighbor_locs_and_min_val(loc, config):
+   #return the 4 neighbor grid locations in a list
+   y = loc[0]
+   x = loc[1]
+
+   coord_ls = []
+
+   if (y - 1) >= 0:
+      #append the coord to coord_ls
+   if (y - 1) < config["map_size"][0]:
+
+   if (x - 1) >= 0:
+
+   if (x - 1) < config["map_size"][1]:
+
+def value_to_node_map(astar_map):
+   node_map = []
+   for h in range(0, map_height):
+         node_map.append([]*map )
+
+def find_astar_path(config):
+   astar_map = get_astar_map(config)
+   node_map = value_to_node_map(astar_map)
+
+   start     = config["start"]
+   goal      = config["goal"]
+
+   neighbors, mini = get_neighbor_locs_and_min_val(start, config)
+
+
+
+class aStarNode():
+   def __init__(self, coords, parent, value):
+      self.coords = coords
+      self.parent = parent
+      self.value  = value
+
