@@ -29,34 +29,37 @@ prob_back      = config["prob_move_backward"]
 prob_left      = config["prob_move_left"]
 prob_right     = config["prob_move_right"]
 
-robot_loc      = start
 grid           = []
 moves          = ['N', 'S', 'W', 'E']
 
 class qLearning():
    def __init__(self):
-      init = 1     
+      self.init_grid()  
+      self.robot_loc      = start
 
    def start(self):
-      self.init_grid()  
-
+      print "before:" , self.robot_loc
+      print "start is", start
+      self.robot_loc = copy.deepcopy(start)
+      print "after:", self.robot_loc
       self.take_a_step()
 
    def take_a_step(self):
       #TODO: add in the weighs
       
-      total_change = 0
       isAbsorbed = False 
       while True:
          #random if all the values are equal
-         if grid[robot_loc[0]][robot_loc[1]].all_equal():
+         print "at: ", self.robot_loc, "N:", grid[self.robot_loc[0]][self.robot_loc[1]].N_val,  "S:", grid[self.robot_loc[0]][self.robot_loc[1]].S_val, "E:", grid[self.robot_loc[0]][self.robot_loc[1]].E_val, "W:", grid[self.robot_loc[0]][self.robot_loc[1]].W_val
+         if grid[self.robot_loc[0]][self.robot_loc[1]].all_equal():
             move_n    = random.randint(0, 3)
             move = moves[move_n]
-            old_val = grid[robot_loc[0]][robot_loc[1]].N_val
+            old_val = grid[self.robot_loc[0]][self.robot_loc[1]].N_val
          else:
-            move, old_val = grid[robot_loc[0]][robot_loc[1]].max_move_qval()
+            move, old_val = grid[self.robot_loc[0]][self.robot_loc[1]].max_move_qval()
 
-         old_loc = copy.deepcopy(robot_loc)
+         old_loc = copy.deepcopy(self.robot_loc)
+         print move
          moved = self.make_move(move)
 
          move_ls = []
@@ -68,23 +71,25 @@ class qLearning():
             move_ls = [0,0]
             step_cost = reward_wall
 
-         if grid[robot_loc[0]][robot_loc[1]].isGoal:
+         if grid[self.robot_loc[0]][self.robot_loc[1]].isGoal:
             step_cost = reward_goal
             isAbsorbed = True
-         if grid[robot_loc[0]][robot_loc[1]].isPit:
+         if grid[self.robot_loc[0]][self.robot_loc[1]].isPit:
             step_cost = reward_pit
             isAbsorbed = True
 
          Qold    = grid[old_loc[0]][old_loc[1]].get_move_val(move)
 
-         mov, m_val = grid[robot_loc[0]][robot_loc[1]].max_move_qval()
+         mov, m_val = grid[self.robot_loc[0]][self.robot_loc[1]].max_move_qval()
 
          Ui      = step_cost + discount_fact*m_val
          Qnow    = (1-learning_rate)*Qold + learning_rate*Ui
 
+
          grid[old_loc[0]][old_loc[1]].set_val(move, Qnow)
 
          if isAbsorbed:
+            print "we've been absorbed"
             return True
 
    def move_to_ls(self, move):
@@ -101,20 +106,20 @@ class qLearning():
 
 
    def make_move(self, move):
-      h = robot_loc[0]
-      w = robot_loc[1]
+      h = self.robot_loc[0]
+      w = self.robot_loc[1]
       moved = False
       if move == 'N' and h-1 >= 0 and not grid[h-1][w].isWall:
-         robot_loc[0] = robot_loc[0]-1
+         self.robot_loc[0] = self.robot_loc[0]-1
          moved = True
       if move == 'S' and h+1 < map_height and not grid[h+1][w].isWall:
-         robot_loc[0] = robot_loc[0]+1
+         self.robot_loc[0] = self.robot_loc[0]+1
          moved = True
       if move == 'W' and w-1 >= 0 and not grid[h][w-1].isWall:
-         robot_loc[1] = robot_loc[1]-1
+         self.robot_loc[1] = self.robot_loc[1]-1
          moved = True
-      if move == 'E' and w+1 >= map_width and not grid[h][w+1].isWall:
-         robot_loc[1] = robot_loc[1]+1
+      if move == 'E' and w+1 < map_width and not grid[h][w+1].isWall:
+         self.robot_loc[1] = self.robot_loc[1]+1
          moved = True
       return moved
    

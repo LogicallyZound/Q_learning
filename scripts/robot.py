@@ -25,7 +25,7 @@ class robot():
 #      self.compute_aStar_map() 
 #      self.compute_mdp_path()
 
-      if qlearn_done:
+      if self.qlearn_done:
          self.sim_publisher.publish(True)
          rospy.sleep(2)
          rospy.signal_shutdown('done')
@@ -36,6 +36,31 @@ class robot():
    def compute_qlearning_path(self):
       ql = qLearning()
       ql.start()
+      rospy.sleep(2)
+      ql.start()
+      ql.start()
+      ql.start()
+      rospy.sleep(2)
+      ql.start()
+      ql.start()
+      ql.start()
+      ql.start()
+      rospy.sleep(2)
+      ql.start()
+      ql.start()
+      ql.start()
+      rospy.sleep(2)
+      ql.start()
+      ql.start()
+      rospy.sleep(2)
+      ql.start()
+      ql.start()
+      ql.start()
+      rospy.sleep(2)
+      ql.start()
+      ql.start()
+      ql.start()
+      rospy.sleep(2)
       self.qlearn_done = True
 
    def compute_mdp_path(self):

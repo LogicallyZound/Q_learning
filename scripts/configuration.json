@@ -21,7 +21,7 @@
 
 
   "reward_for_each_step": -0.05,
-  "reward_for_hitting_wall": 0.03,
+  "reward_for_hitting_wall": -0.03,
   "reward_for_reaching_goal": 10.0,
   "reward_for_falling_in_pit": -10.0,
 
