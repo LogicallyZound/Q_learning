@@ -2,6 +2,7 @@
 import rospy
 import astar as ast
 import mdp   as mdp
+from qLearning import qLearning
 
 from read_config import read_config
 from cse_190_assi_3.msg import AStarPath, PolicyList
@@ -13,22 +14,29 @@ class robot():
    def __init__(self):
       self.mdp_done = False
       self.aStar_done = False
+      self.qlearn_done = False
 
       rospy.init_node('robot_node', anonymous = True)
       self.init_config()
       self.init_pubs()
 
       rospy.sleep(2)
-      self.compute_aStar_map() 
-      self.compute_mdp_path()
+      self.compute_qlearning_path()
+#      self.compute_aStar_map() 
+#      self.compute_mdp_path()
 
-      if self.mdp_done and self.aStar_done:
+      if qlearn_done:
          self.sim_publisher.publish(True)
          rospy.sleep(2)
          rospy.signal_shutdown('done')
 
       rospy.spin()
 
+
+   def compute_qlearning_path(self):
+      ql = qLearning()
+      ql.start()
+      self.qlearn_done = True
 
    def compute_mdp_path(self):
       policy = mdp.get_mdp_policy(self.mdp_publisher) 
