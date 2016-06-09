@@ -34,9 +34,9 @@
   "threshold_difference": 0.00001,
 
 
-  "reward_for_each_step": -0.05,
-  "reward_for_hitting_wall": -0.02,
-  "reward_for_reaching_goal": 5.0,
+  "reward_for_each_step": -0.01,
+  "reward_for_hitting_wall": -0.1,
+  "reward_for_reaching_goal": 10.0,
   "reward_for_falling_in_pit": -5.0,
 
   "discount_factor": 0.99,

@@ -2,6 +2,7 @@
 import copy
 import rospy
 import random
+import itertools
 from read_config import read_config
 
 
@@ -33,22 +34,38 @@ grid           = []
 moves          = ['N', 'S', 'W', 'E']
 
 class qLearning():
-   def __init__(self):
+   def __init__(self, publisher):
       self.init_grid()  
       self.robot_loc      = start
+      self.pub            = publisher
 
    def start(self):
-      print "before:" , self.robot_loc
-      print "start is", start
       self.robot_loc = copy.deepcopy(start)
-      print "after:", self.robot_loc
       self.take_a_step()
+
+   def publish_policy(self):
+      pub_grid = []
+      gridd = copy.deepcopy(grid)
+
+      for i in range(0, map_height):
+         pub_grid.append(['u']*map_width)
+
+      for h in range(0, map_height):
+         for w in range(0, map_width):
+            pub_grid[h][w] = gridd[h][w].get_policy()
+
+      flat_grid = itertools.chain(*pub_grid)
+      rospy.sleep(0.5)
+      self.pub.publish(list(flat_grid))
+
+            
 
    def take_a_step(self):
       #TODO: add in the weighs
       
       isAbsorbed = False 
       while True:
+         self.publish_policy()
          #random if all the values are equal
          print "at: ", self.robot_loc, "N:", grid[self.robot_loc[0]][self.robot_loc[1]].N_val,  "S:", grid[self.robot_loc[0]][self.robot_loc[1]].S_val, "E:", grid[self.robot_loc[0]][self.robot_loc[1]].E_val, "W:", grid[self.robot_loc[0]][self.robot_loc[1]].W_val
          if grid[self.robot_loc[0]][self.robot_loc[1]].all_equal():
@@ -101,9 +118,6 @@ class qLearning():
          return [-1, 0]
       if move == 'E':
          return [1, 0]
-
-
-
 
    def make_move(self, move):
       h = self.robot_loc[0]
@@ -190,6 +204,31 @@ class qNode():
 
    def set_coords(self, coords):
       self.coords = coords
+
+   def get_policy(self):
+      m = -999
+      mov = 'B'
+
+      if self.N_val > m:
+         m   = self.S_val
+         mov = 'N'
+      if self.S_val > m:
+         m   = self.S_val
+         mov = 'S'
+      if self.W_val > m:
+         m   = self.W_val
+         mov = 'W'
+      if self.E_val > m:
+         m   = self.E_val
+         mov = 'E'
+      if self.isWall:
+         mov   = 'WALL'
+      if self.isGoal:
+         mov   = 'GOAL'
+      if self.isPit:
+         mov   = 'PIT'
+
+      return mov
 
    def max_move_qval(self):
       m = self.N_val

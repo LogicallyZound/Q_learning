@@ -11,6 +11,8 @@ up = cv2.imread("../img/up.jpg")
 down = cv2.imread("../img/down.jpg")
 left = cv2.imread("../img/left.jpg")
 right = cv2.imread("../img/right.jpg")
+blank = cv2.imread("../img/blank.jpg")
+
 goal = cv2.imread("../img/goal.jpg")
 wall = cv2.imread("../img/wall.jpg")
 pit = cv2.imread("../img/pit.jpg")
@@ -22,7 +24,8 @@ img_map = {
     "N": up,
     "S": down,
     "W": left,
-    "E": right
+    "E": right,
+    "B": blank
 }
 
 height, width, layers = MAP_SHAPE
@@ -47,5 +50,5 @@ def generate_video(no_of_iterations):
         img = cv2.imread(file_name)
         video.write(cv2.cvtColor(np.array(img), cv2.COLOR_RGB2BGR))
         #This removes the image after stitching it to the video. Please comment this if you want the images to be saved
-        os.remove(file_name)
+        #os.remove(file_name)
     video.release()

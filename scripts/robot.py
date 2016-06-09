@@ -34,33 +34,10 @@ class robot():
 
 
    def compute_qlearning_path(self):
-      ql = qLearning()
-      ql.start()
-      rospy.sleep(2)
-      ql.start()
-      ql.start()
-      ql.start()
-      rospy.sleep(2)
-      ql.start()
-      ql.start()
-      ql.start()
-      ql.start()
-      rospy.sleep(2)
-      ql.start()
-      ql.start()
-      ql.start()
-      rospy.sleep(2)
-      ql.start()
-      ql.start()
-      rospy.sleep(2)
-      ql.start()
-      ql.start()
-      ql.start()
-      rospy.sleep(2)
-      ql.start()
-      ql.start()
-      ql.start()
-      rospy.sleep(2)
+      ql = qLearning(self.mdp_publisher)
+      for i in range (0, 40):
+         ql.start()
+      rospy.sleep(1)
       self.qlearn_done = True
 
    def compute_mdp_path(self):
